@@ -154,7 +154,7 @@ export function RegisterForm() {
             disabled={mutation.isPending}
             className="w-full flex-row items-center justify-center gap-2">
             {(isSubmitting || mutation.isPending) && <ActivityIndicator color="#000" />}
-            <Text>{isSubmitting || mutation.isPending ? 'Memproses...' : 'Continue'}</Text>
+            <Text>{isSubmitting || mutation.isPending ? 'Processing...' : 'Continue'}</Text>
           </Button>
         )}
       />
