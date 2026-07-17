@@ -10,10 +10,12 @@ import { useLogin } from '../hooks/use-login';
 import { loginSchema } from '../validation/login';
 import { saveTokens } from '@/infrastructure/storage/token';
 import { deviceName } from 'expo-device';
+import { useAuth } from '../context/auth-context';
 
 export function LoginForm() {
     const mutation = useLogin();
     const router = useRouter();
+    const { setToken } = useAuth();
 
     const form = useForm({
         defaultValues: {
@@ -26,9 +28,11 @@ export function LoginForm() {
         },
         onSubmit: ({ value }) => {
             mutation.mutate(value, {
-                onSuccess: (data) => {
-                    saveTokens(data.data!.accessToken, data.data!.refreshToken)
-                    router.replace('/(protected)/dashboard');
+                onSuccess: async (data) => {
+                    await saveTokens(data.data!.accessToken, data.data!.refreshToken);
+                    setToken(data.data!.accessToken);
+                    // router.replace is now handled globally by AuthGuard, but we can keep it as fallback
+                    router.replace('/(protected)/transaction');
                     toast.success(data.message || 'Login success.');
                 },
                 onError: (error) => {
@@ -38,6 +42,7 @@ export function LoginForm() {
             });
         },
     });
+
 
     return (
         <>

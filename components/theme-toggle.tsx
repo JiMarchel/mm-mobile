@@ -16,7 +16,7 @@ export function ThemeToggle() {
       onPressIn={toggleColorScheme}
       size="icon"
       variant="ghost"
-      className="ios:size-9 rounded-full web:mx-4">
+      className="ios:size-9 mr-3 rounded-full web:mx-4">
       <Icon as={THEME_ICONS[colorScheme ?? 'light']} className="size-5" />
     </Button>
   );
