@@ -1,7 +1,7 @@
-import { Text } from "@/components/ui/text"
+import { AccountsScreen } from '@/features/wallet/screen/accounts-screen';
 
-export default function Accounts() {
-    return (
-        <Text>Accounts</Text>
-    )
+export default function AccountsPage() {
+  return (
+    <AccountsScreen />
+  );
 }

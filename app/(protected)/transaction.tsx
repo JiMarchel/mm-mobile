@@ -1,7 +1,7 @@
-import { Text } from "@/components/ui/text"
+import { TransactionScreen } from "@/features/transaction/screen/transaction-screen";
 
-export default function Transaction() {
+export default function TransactionPage() {
     return (
-        <Text>wkwk</Text>
+        <TransactionScreen />
     )
 }
