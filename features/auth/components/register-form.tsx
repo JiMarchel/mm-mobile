@@ -8,6 +8,7 @@ import { useRegister } from '../hooks/use-register';
 import { registerSchema } from '../validation/register';
 import { useRouter } from 'expo-router';
 import { toast } from 'sonner-native';
+import { extractErrorMessage } from '@/lib/utils';
 
 export function RegisterForm() {
   const mutation = useRegister();
@@ -32,7 +33,7 @@ export function RegisterForm() {
           toast.success(data.message || 'Registration success.');
         },
         onError: (error) => {
-          toast.error(error.message || 'Terjadi kesalahan saat mendaftar.');
+          toast.error(extractErrorMessage(error, 'An error occurred during registration.'));
           console.error('Registration error:', error);
         },
       });
@@ -48,7 +49,7 @@ export function RegisterForm() {
             <Label htmlFor={field.name}>Username</Label>
             <Input
               id={field.name}
-              placeholder="Masukkan username"
+              placeholder="Enter username"
               value={field.state.value}
               onChangeText={field.handleChange}
               onBlur={field.handleBlur}
@@ -142,7 +143,7 @@ export function RegisterForm() {
 
       {mutation.isError && (
         <Text className="text-center text-sm text-destructive">
-          {mutation.error.message || 'Terjadi kesalahan saat mendaftar.'}
+          {extractErrorMessage(mutation.error, 'An error occurred during registration.')}
         </Text>
       )}
 

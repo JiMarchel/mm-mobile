@@ -12,3 +12,8 @@ export type Token = {
     refreshToken: string
 }
 export type LoginResponse = ApiSuccessResponse<Token>
+
+export type LogoutRequest = {
+    refreshToken: string;
+};
+export type LogoutResponse = ApiSuccessResponse<void>;

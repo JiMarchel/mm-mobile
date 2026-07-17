@@ -11,6 +11,7 @@ import { loginSchema } from '../validation/login';
 import { saveTokens } from '@/infrastructure/storage/token';
 import { deviceName } from 'expo-device';
 import { useAuth } from '../context/auth-context';
+import { extractErrorMessage } from '@/lib/utils';
 
 export function LoginForm() {
     const mutation = useLogin();
@@ -36,7 +37,7 @@ export function LoginForm() {
                     toast.success(data.message || 'Login success.');
                 },
                 onError: (error) => {
-                    toast.error(error.message || 'Terjadi kesalahan saat login.');
+                    toast.error(extractErrorMessage(error, 'An error occurred during login.'));
                     console.error('Login error:', error);
                 },
             });
@@ -99,7 +100,7 @@ export function LoginForm() {
 
             {mutation.isError && (
                 <Text className="text-center text-sm text-destructive">
-                    {mutation.error.message || 'Terjadi kesalahan saat login.'}
+                    {extractErrorMessage(mutation.error, 'An error occurred during login.')}
                 </Text>
             )}
 

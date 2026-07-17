@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { ArrowRightLeft, PieChart, Wallet } from 'lucide-react-native';
+import { ArrowRightLeft, PieChart, Wallet, Menu } from 'lucide-react-native';
 import { useColorScheme } from 'nativewind';
 import { NAV_THEME } from '@/lib/theme';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -48,6 +48,15 @@ export default function ProtectedLayout() {
           title: 'Accounts',
           tabBarIcon: ({ color, size }) => (
             <Wallet size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="more"
+        options={{
+          title: 'More',
+          tabBarIcon: ({ color, size }) => (
+            <Menu size={size} color={color} />
           ),
         }}
       />
