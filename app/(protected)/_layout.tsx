@@ -1,5 +1,6 @@
-import { Tabs } from 'expo-router';
-import { ArrowRightLeft, PieChart, Wallet, Menu } from 'lucide-react-native';
+import { Tabs, useRouter } from 'expo-router';
+import { ArrowRightLeft, PieChart, Wallet, Menu, ChevronLeft } from 'lucide-react-native';
+import { TouchableOpacity } from 'react-native';
 import { useColorScheme } from 'nativewind';
 import { NAV_THEME } from '@/lib/theme';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -58,6 +59,21 @@ export default function ProtectedLayout() {
           tabBarIcon: ({ color, size }) => (
             <Menu size={size} color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="transaction-create"
+        options={{
+          href: null,
+          title: 'Add Transaction',
+          headerLeft: () => {
+            const router = useRouter();
+            return (
+              <TouchableOpacity onPress={() => router.back()} className="ml-4 mr-2">
+                <ChevronLeft size={24} color={theme.colors.text} />
+              </TouchableOpacity>
+            );
+          },
         }}
       />
     </Tabs>

@@ -77,12 +77,15 @@ api.interceptors.response.use(
         });
 
         // Sesuaikan 'data.accessToken' dan 'data.refreshToken' dengan response API Anda
-        await saveTokens(data.accessToken, data.refreshToken);
+        const newAccessToken = data.data.accessToken;
+        const newRefreshToken = data.data.refreshToken;
         
-        api.defaults.headers.common.Authorization = `Bearer ${data.accessToken}`;
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        await saveTokens(newAccessToken, newRefreshToken);
+        
+        api.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-        processQueue(null, data.accessToken);
+        processQueue(null, newAccessToken);
         
         return api(originalRequest);
       } catch (err) {

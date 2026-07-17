@@ -3,7 +3,7 @@ import { View, ActivityIndicator } from "react-native"
 import { Button } from "@/components/ui/button"
 import { useAllWallets } from "@/features/wallet/hooks/use-all-wallets"
 import { useRouter } from "expo-router"
-import { Wallet } from "lucide-react-native"
+import { Wallet, Plus } from "lucide-react-native"
 
 export function TransactionScreen() {
     const { data, isLoading, isError, refetch } = useAllWallets();
@@ -46,9 +46,18 @@ export function TransactionScreen() {
     }
 
     return (
-        <View className="flex-1 p-6">
+        <View className="flex-1 p-6 relative">
             <Text className="text-2xl font-bold">Transactions</Text>
             {/* transaction list goes here */}
+
+            <Button
+                variant="default"
+                size="icon"
+                className="absolute bottom-6 right-6 rounded-full h-14 w-14 shadow-lg shadow-black/20 z-50"
+                onPress={() => router.push('/(protected)/transaction-create')}
+            >
+                <Plus color="black" size={24} />
+            </Button>
         </View>
     )
 }
