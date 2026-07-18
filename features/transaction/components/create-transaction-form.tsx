@@ -131,6 +131,10 @@ export function CreateTransactionForm({
             <Select
               value={field.state.value ? { value: field.state.value, label: categories.find(c => c.id === field.state.value)?.name || field.state.value } : undefined}
               onValueChange={(option) => {
+                if (option && option.value === 'NEW_CATEGORY') {
+                  setTimeout(() => setIsCategoryDialogOpen(true), 150);
+                  return;
+                }
                 if (option) field.handleChange(option.value);
               }}>
               <SelectTrigger>
@@ -146,15 +150,13 @@ export function CreateTransactionForm({
                       <Text>{category.name}</Text>
                     </SelectItem>
                   ))}
+                  <SelectItem key="new-category" label="Create New Category" value="NEW_CATEGORY" className="mt-1 border-t border-border pt-2">
+                    <View className="flex-row items-center gap-2">
+                      <Plus size={16} className="text-muted-foreground" />
+                      <Text className="text-sm font-medium">Create New Category</Text>
+                    </View>
+                  </SelectItem>
                 </SelectGroup>
-                <Button 
-                    variant="ghost" 
-                    className="flex-row items-center justify-start px-2 py-3 border-t border-border mt-1 gap-2"
-                    onPress={() => setIsCategoryDialogOpen(true)}
-                >
-                    <Plus size={16} className="text-muted-foreground" />
-                    <Text className="text-sm">Create New Category</Text>
-                </Button>
               </SelectContent>
             </Select>
             {field.state.meta.errors.length > 0 && (
