@@ -1,5 +1,6 @@
 import { env } from '@/config/env';
 import axios from 'axios';
+import * as Device from 'expo-device';
 import { getAccessToken, getRefreshToken, saveTokens, clearTokens } from '../storage/token';
 
 export const api = axios.create({
@@ -71,9 +72,9 @@ api.interceptors.response.use(
       }
 
       try {
-        // Pastikan endpoint ini sesuai dengan API Anda
         const { data } = await axios.post(`${env.API_URL}/auth/refresh`, {
           refreshToken,
+          deviceName: Device.deviceName || Device.modelName || 'Unknown Device',
         });
 
         // Sesuaikan 'data.accessToken' dan 'data.refreshToken' dengan response API Anda

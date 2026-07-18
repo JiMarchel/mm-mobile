@@ -26,10 +26,12 @@ import { Plus } from 'lucide-react-native';
 
 export function CreateTransactionForm({ 
   direction, 
-  onSuccess 
+  onSuccess,
+  initialDate,
 }: { 
   direction: TransactionDirection;
   onSuccess?: () => void;
+  initialDate?: string;
 }) {
   const mutation = useCreateTransaction();
   const insets = useSafeAreaInsets();
@@ -48,7 +50,7 @@ export function CreateTransactionForm({
       amount: '' as unknown as number, // We will cast this
       direction,
       description: '',
-      date: new Date().toISOString(),
+      date: initialDate ? new Date(`${initialDate}T12:00:00Z`).toISOString() : new Date().toISOString(),
     } as unknown as CreateTransactionInput, // Cast due to amount being typed as number in schema
     validators: {
       onSubmit: createTransactionSchema as any,

@@ -20,6 +20,7 @@
     "axios": "^1.18.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.4.0",
     "expo": "~56.0.13",
     "expo-constants": "~56.0.19",
     "expo-device": "^57.0.0",

@@ -8,8 +8,9 @@ export function useCreateTransfer() {
     return useMutation<CreateTransactionResponse, Error, CreateTransferPayload>({
         mutationFn: createTransfer,
         onSuccess: () => {
-            // Invalidate wallet queries to update balances
+            // Invalidate wallet and transactions queries to update balances and lists
             queryClient.invalidateQueries({ queryKey: ['wallets'] });
+            queryClient.invalidateQueries({ queryKey: ['transactions'] });
         },
     });
 }

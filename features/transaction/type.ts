@@ -19,16 +19,35 @@ export type CreateTransferPayload = {
     date: string;
 }
 
-export type Transaction = {
+export type TransactionEntry = {
     id: string;
     accountId: string;
     categoryId?: string;
-    amount: string;
+    amount: number;
     direction: TransactionDirection;
+};
+
+export type Transaction = {
+    id: string;
     description: string;
     date: string;
-    createdAt: string;
-    updatedAt: string;
+    entries: TransactionEntry[];
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export type FlatTransaction = {
+    id: string;
+    transactionId: string;
+    description: string;
+    date: string;
+    accountId: string;
+    destinationAccountId?: string;
+    categoryId?: string;
+    amount: number;
+    direction: TransactionDirection | 'TRANSFER';
 }
 
 export type CreateTransactionResponse = ApiSuccessResponse<Transaction>;
+
+export type AllTransactionsResponse = ApiSuccessResponse<Transaction[]>;

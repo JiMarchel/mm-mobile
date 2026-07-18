@@ -3,16 +3,13 @@ import { View, ScrollView } from 'react-native';
 import { TabType, TransactionTabs } from '../components/transaction-tabs';
 import { CreateTransactionForm } from '../components/create-transaction-form';
 import { CreateTransferForm } from '../components/create-transfer-form';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
 export function CreateTransactionScreen() {
   const [activeTab, setActiveTab] = useState<TabType>('Income');
   const router = useRouter();
-
-  const handleSuccess = () => {
-    // Navigate back to the transaction list when done
-    router.back();
-  };
+  const params = useLocalSearchParams<{ date?: string }>();
+  const initialDate = params.date ? params.date : undefined;
 
   return (
     <View className="flex-1 bg-background">
@@ -25,9 +22,9 @@ export function CreateTransactionScreen() {
         contentContainerStyle={{ paddingBottom: 40 }}
         showsVerticalScrollIndicator={false}
       >
-        {activeTab === 'Income' && <CreateTransactionForm direction="IN" onSuccess={handleSuccess} />}
-        {activeTab === 'Expense' && <CreateTransactionForm direction="OUT" onSuccess={handleSuccess} />}
-        {activeTab === 'Transfer' && <CreateTransferForm onSuccess={handleSuccess} />}
+        {activeTab === 'Income' && <CreateTransactionForm direction="IN" initialDate={initialDate} />}
+        {activeTab === 'Expense' && <CreateTransactionForm direction="OUT" initialDate={initialDate} />}
+        {activeTab === 'Transfer' && <CreateTransferForm initialDate={initialDate} />}
       </ScrollView>
     </View>
   );

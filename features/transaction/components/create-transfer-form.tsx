@@ -21,7 +21,13 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAllWallets } from '@/features/wallet/hooks/use-all-wallets';
 
-export function CreateTransferForm({ onSuccess }: { onSuccess?: () => void }) {
+export function CreateTransferForm({ 
+  onSuccess,
+  initialDate 
+}: { 
+  onSuccess?: () => void;
+  initialDate?: string;
+}) {
   const mutation = useCreateTransfer();
   const insets = useSafeAreaInsets();
   const { data: walletsData } = useAllWallets();
@@ -34,7 +40,7 @@ export function CreateTransferForm({ onSuccess }: { onSuccess?: () => void }) {
       destinationAccountId: '',
       amount: '' as unknown as number,
       description: '',
-      date: new Date().toISOString(),
+      date: initialDate ? new Date(`${initialDate}T12:00:00Z`).toISOString() : new Date().toISOString(),
     } as unknown as CreateTransferPayload,
     validators: {
       onSubmit: createTransferSchema as any,
