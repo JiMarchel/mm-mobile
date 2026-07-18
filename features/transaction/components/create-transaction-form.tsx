@@ -99,11 +99,16 @@ export function CreateTransactionForm({
                   placeholder="Select account"
                 />
               </SelectTrigger>
-              <SelectContent insets={insets} className="w-[300px]">
+              <SelectContent insets={insets} className="w-[350px]">
                 <SelectGroup>
                   {wallets.map((wallet) => (
                     <SelectItem key={wallet.id} label={wallet.name} value={wallet.id}>
-                      <Text>{wallet.name}</Text>
+                      <View className="flex-row items-center justify-between w-full pr-8">
+                        <Text>{wallet.name}</Text>
+                        <Text className="text-muted-foreground text-xs ml-4">
+                          Rp {new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(Number(wallet.balance) || 0)}
+                        </Text>
+                      </View>
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -134,7 +139,7 @@ export function CreateTransactionForm({
                   placeholder="Select category"
                 />
               </SelectTrigger>
-              <SelectContent insets={insets} className="w-[300px]">
+              <SelectContent insets={insets} className="w-[350px]">
                 <SelectGroup>
                   {categories.map((category) => (
                     <SelectItem key={category.id} label={category.name} value={category.id}>

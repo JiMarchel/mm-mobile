@@ -168,7 +168,13 @@ function SelectItem({
           <Icon as={Check} className="text-muted-foreground size-4 shrink-0" />
         </SelectPrimitive.ItemIndicator>
       </View>
-      <SelectPrimitive.ItemText className="text-foreground group-active:text-accent-foreground select-none text-sm" />
+      {children ? (
+        <View className="flex-1">
+          {children as React.ReactNode}
+        </View>
+      ) : (
+        <SelectPrimitive.ItemText className="text-foreground group-active:text-accent-foreground select-none text-sm" />
+      )}
     </SelectPrimitive.Item>
   );
 }
