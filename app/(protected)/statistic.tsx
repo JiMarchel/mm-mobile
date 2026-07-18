@@ -1,7 +1,11 @@
-import { Text } from "@/components/ui/text"
+import { StatisticScreen } from '@/features/statistic/screen/statistic-screen';
+import { Stack } from 'expo-router';
+import { View } from 'react-native';
 
-export default function Statistic() {
+export default function StatisticRoute() {
     return (
-        <Text>Statistic</Text>
-    )
+        <View className="flex-1">
+            <StatisticScreen />
+        </View>
+    );
 }
