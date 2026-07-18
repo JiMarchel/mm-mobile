@@ -6,11 +6,17 @@ import { FlatTransaction } from '../type';
 import { format, parseISO } from 'date-fns';
 import { useAllWallets } from '@/features/wallet/hooks/use-all-wallets';
 import { useGetCategories } from '@/features/category/hooks/use-get-categories';
+import { TransactionActionDialog } from './transaction-action-dialog';
+import { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 
 export function DailyView({ transactions, selectedDate }: { transactions: FlatTransaction[], selectedDate?: string | null }) {
   const router = useRouter();
   const { data: walletsData } = useAllWallets();
   const { data: categoriesData } = useGetCategories();
+  
+  const [selectedTransaction, setSelectedTransaction] = useState<FlatTransaction | null>(null);
+  const [isActionDialogOpen, setIsActionDialogOpen] = useState(false);
 
   const wallets = walletsData?.data || [];
   const categories = categoriesData?.data || [];
@@ -117,7 +123,14 @@ export function DailyView({ transactions, selectedDate }: { transactions: FlatTr
                 ) : (
                   <View className="bg-card">
                     {dayTransactions.map((t, idx) => (
-                      <View key={t.id} className={`flex-row items-center justify-between px-4 py-3 ${idx !== dayTransactions.length - 1 ? 'border-b border-border' : ''}`}>
+                      <TouchableOpacity 
+                        key={t.id} 
+                        className={`flex-row items-center justify-between px-4 py-3 ${idx !== dayTransactions.length - 1 ? 'border-b border-border' : ''}`}
+                        onPress={() => {
+                          setSelectedTransaction(t);
+                          setIsActionDialogOpen(true);
+                        }}
+                      >
                         <View className="flex-row items-center flex-1">
                           <View className="w-8 h-8 rounded-full bg-secondary items-center justify-center mr-3">
                               <Text className="text-xs">{t.categoryId ? '🛒' : '🔄'}</Text>
@@ -140,7 +153,7 @@ export function DailyView({ transactions, selectedDate }: { transactions: FlatTr
                         <Text className={`font-medium ${t.direction === 'IN' ? 'text-blue-500' : t.direction === 'OUT' ? 'text-red-500' : 'text-foreground'}`}>
                           Rp {formatMoney(Number(t.amount))}
                         </Text>
-                      </View>
+                      </TouchableOpacity>
                     ))}
                   </View>
                 )}
@@ -149,6 +162,16 @@ export function DailyView({ transactions, selectedDate }: { transactions: FlatTr
           })
         )}
       </ScrollView>
+
+      <TransactionActionDialog
+        transaction={selectedTransaction}
+        open={isActionDialogOpen}
+        onOpenChange={setIsActionDialogOpen}
+        onEdit={(tx) => {
+          // Navigate to edit screen
+          router.push(`/(protected)/transaction-edit/${tx.transactionId}`);
+        }}
+      />
     </View>
   );
 }

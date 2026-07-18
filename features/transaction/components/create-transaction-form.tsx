@@ -7,7 +7,9 @@ import { Text } from '@/components/ui/text';
 import { useForm } from '@tanstack/react-form';
 import { toast } from 'sonner-native';
 import { useCreateTransaction } from '../hooks/use-create-transaction';
+import { useUpdateTransaction } from '../hooks/use-update-transaction';
 import { createTransactionSchema, CreateTransactionInput } from '../validation/transaction';
+import { Transaction } from '../type';
 import { extractErrorMessage } from '@/lib/utils';
 import { 
   Select, 
@@ -28,12 +30,20 @@ export function CreateTransactionForm({
   direction, 
   onSuccess,
   initialDate,
+  isEditing = false,
+  transactionId,
+  initialData,
 }: { 
   direction: TransactionDirection;
   onSuccess?: () => void;
   initialDate?: string;
+  isEditing?: boolean;
+  transactionId?: string;
+  initialData?: Partial<CreateTransactionInput>;
 }) {
-  const mutation = useCreateTransaction();
+  const createMutation = useCreateTransaction();
+  const updateMutation = useUpdateTransaction(transactionId || '');
+  const mutation = isEditing ? updateMutation : createMutation;
   const insets = useSafeAreaInsets();
   const { data: walletsData } = useAllWallets();
   const { data: categoriesData } = useGetCategories();
@@ -45,12 +55,14 @@ export function CreateTransactionForm({
 
   const form = useForm({
     defaultValues: {
-      accountId: '',
-      categoryId: '',
-      amount: '' as unknown as number, // We will cast this
+      accountId: initialData?.accountId || '',
+      categoryId: initialData?.categoryId || '',
+      amount: (initialData?.amount?.toString() || '') as unknown as number,
       direction,
-      description: '',
-      date: initialDate ? new Date(`${initialDate}T12:00:00Z`).toISOString() : new Date().toISOString(),
+      description: initialData?.description || '',
+      date: initialData?.date 
+        ? new Date(initialData.date).toISOString() 
+        : (initialDate ? new Date(`${initialDate}T12:00:00Z`).toISOString() : new Date().toISOString()),
     } as unknown as CreateTransactionInput, // Cast due to amount being typed as number in schema
     validators: {
       onSubmit: createTransactionSchema as any,
@@ -58,12 +70,12 @@ export function CreateTransactionForm({
     onSubmit: ({ value }) => {
       mutation.mutate(value, {
         onSuccess: () => {
-          toast.success('Transaction created successfully.');
-          form.reset();
+          toast.success(`Transaction ${isEditing ? 'updated' : 'created'} successfully.`);
+          if (!isEditing) form.reset();
           onSuccess?.();
         },
         onError: (error) => {
-          toast.error(extractErrorMessage(error, 'Failed to create transaction.'));
+          toast.error(extractErrorMessage(error, `Failed to ${isEditing ? 'update' : 'create'} transaction.`));
         },
       });
     },
@@ -196,7 +208,7 @@ export function CreateTransactionForm({
 
       {mutation.isError && (
         <Text className="text-center text-sm text-destructive">
-          {extractErrorMessage(mutation.error, 'Failed to create transaction.')}
+          {extractErrorMessage(mutation.error, `Failed to ${isEditing ? 'update' : 'create'} transaction.`)}
         </Text>
       )}
 
@@ -208,7 +220,7 @@ export function CreateTransactionForm({
             disabled={mutation.isPending}
             className="mt-4 flex-row items-center justify-center gap-2">
             {(isSubmitting || mutation.isPending) && <ActivityIndicator color="#000" />}
-            <Text>{isSubmitting || mutation.isPending ? 'Saving...' : 'Save Transaction'}</Text>
+            <Text>{isSubmitting || mutation.isPending ? 'Saving...' : (isEditing ? 'Update Transaction' : 'Save Transaction')}</Text>
           </Button>
         )}
       />

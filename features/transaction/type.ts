@@ -19,6 +19,9 @@ export type CreateTransferPayload = {
     date: string;
 }
 
+export type UpdateTransactionPayload = CreateTransactionPayload;
+export type UpdateTransferPayload = CreateTransferPayload;
+
 export type TransactionEntry = {
     id: string;
     accountId: string;
@@ -49,5 +52,7 @@ export type FlatTransaction = {
 }
 
 export type CreateTransactionResponse = ApiSuccessResponse<Transaction>;
+
+export type GetTransactionResponse = ApiSuccessResponse<Transaction>;
 
 export type AllTransactionsResponse = ApiSuccessResponse<Transaction[]>;

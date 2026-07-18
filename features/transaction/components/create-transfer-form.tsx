@@ -7,6 +7,7 @@ import { Text } from '@/components/ui/text';
 import { useForm } from '@tanstack/react-form';
 import { toast } from 'sonner-native';
 import { useCreateTransfer } from '../hooks/use-create-transfer';
+import { useUpdateTransfer } from '../hooks/use-update-transfer';
 import { createTransferSchema } from '../validation/transaction';
 import { CreateTransferPayload } from '../type';
 import { extractErrorMessage } from '@/lib/utils';
@@ -23,12 +24,20 @@ import { useAllWallets } from '@/features/wallet/hooks/use-all-wallets';
 
 export function CreateTransferForm({ 
   onSuccess,
-  initialDate 
+  initialDate,
+  isEditing = false,
+  transactionId,
+  initialData,
 }: { 
   onSuccess?: () => void;
   initialDate?: string;
+  isEditing?: boolean;
+  transactionId?: string;
+  initialData?: Partial<CreateTransferPayload>;
 }) {
-  const mutation = useCreateTransfer();
+  const createMutation = useCreateTransfer();
+  const updateMutation = useUpdateTransfer(transactionId || '');
+  const mutation = isEditing ? updateMutation : createMutation;
   const insets = useSafeAreaInsets();
   const { data: walletsData } = useAllWallets();
 
@@ -36,11 +45,13 @@ export function CreateTransferForm({
 
   const form = useForm({
     defaultValues: {
-      sourceAccountId: '',
-      destinationAccountId: '',
-      amount: '' as unknown as number,
-      description: '',
-      date: initialDate ? new Date(`${initialDate}T12:00:00Z`).toISOString() : new Date().toISOString(),
+      sourceAccountId: initialData?.sourceAccountId || '',
+      destinationAccountId: initialData?.destinationAccountId || '',
+      amount: (initialData?.amount?.toString() || '') as unknown as number,
+      description: initialData?.description || '',
+      date: initialData?.date
+        ? new Date(initialData.date).toISOString()
+        : (initialDate ? new Date(`${initialDate}T12:00:00Z`).toISOString() : new Date().toISOString()),
     } as unknown as CreateTransferPayload,
     validators: {
       onSubmit: createTransferSchema as any,
@@ -48,12 +59,12 @@ export function CreateTransferForm({
     onSubmit: ({ value }) => {
       mutation.mutate(value, {
         onSuccess: () => {
-          toast.success('Transfer created successfully.');
-          form.reset();
+          toast.success(`Transfer ${isEditing ? 'updated' : 'created'} successfully.`);
+          if (!isEditing) form.reset();
           onSuccess?.();
         },
         onError: (error) => {
-          toast.error(extractErrorMessage(error, 'Failed to create transfer.'));
+          toast.error(extractErrorMessage(error, `Failed to ${isEditing ? 'update' : 'create'} transfer.`));
         },
       });
     },
@@ -178,7 +189,7 @@ export function CreateTransferForm({
 
       {mutation.isError && (
         <Text className="text-center text-sm text-destructive">
-          {extractErrorMessage(mutation.error, 'Failed to create transfer.')}
+          {extractErrorMessage(mutation.error, `Failed to ${isEditing ? 'update' : 'create'} transfer.`)}
         </Text>
       )}
 
@@ -190,7 +201,7 @@ export function CreateTransferForm({
             disabled={mutation.isPending}
             className="mt-4 flex-row items-center justify-center gap-2">
             {(isSubmitting || mutation.isPending) && <ActivityIndicator color="#000" />}
-            <Text>{isSubmitting || mutation.isPending ? 'Saving...' : 'Save Transfer'}</Text>
+            <Text>{isSubmitting || mutation.isPending ? 'Saving...' : (isEditing ? 'Update Transfer' : 'Save Transfer')}</Text>
           </Button>
         )}
       />

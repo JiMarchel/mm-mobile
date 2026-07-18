@@ -8,8 +8,8 @@ export function useCreateCategory() {
 
     return useMutation<ApiSuccessResponse<Category>, Error, CreateCategoryRequest>({
         mutationFn: createCategory,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['categories'] });
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: ['categories'] });
         },
     });
 }

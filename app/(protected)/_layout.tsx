@@ -76,6 +76,12 @@ export default function ProtectedLayout() {
           },
         }}
       />
+      <Tabs.Screen
+        name="transaction-edit/[id]"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
